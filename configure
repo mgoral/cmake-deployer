@@ -74,6 +74,7 @@ main() {
     create_empty_dir "tests/testcases"
     
     show_todo
+    cleanup
 
     echo "Done! Now please remove configure file:"
     echo "rm -f ${SCRIPT_PATH}/configure"
