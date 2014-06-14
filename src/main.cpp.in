@@ -38,6 +38,7 @@ int main()
         // TODO: Run main application component here!
         // Application app;
         // return app.run();
+        return 0;
     }
     catch (const std::exception& e)
     {
