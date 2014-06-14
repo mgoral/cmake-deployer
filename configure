@@ -23,7 +23,7 @@ edit() {
 show_todo() {
     # Show what manual work is left to do here.
     echo ""
-    echo "This might require you to do a little more manual work."
+    echo "This project might require you to do a little more manual work."
     echo "Inspect those files to learn more: "
     grep -rnH --color --exclude="configure" --exclude-dir=".git" -e "TODO:" .
     echo ""
@@ -36,7 +36,6 @@ create_empty_dir() {
 
 cleanup() {
     echo "Cleanup..."
-    echo "rm -rf ${FILES_TO_CLEAN}"
     rm -rf ${FILES_TO_CLEAN}
     FILES_TO_CLEAN=
 }
