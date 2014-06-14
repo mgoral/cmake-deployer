@@ -56,7 +56,7 @@ main() {
     echo ""
     echo "Preparing build system for ${BUILD_PROJECT_NAME_CAPITAL}..."
 
-    FILES_TO_CLEAN=".git"
+    FILES_TO_CLEAN=".git README"
 
     mv -f starter.in.in "${BUILD_PROJECT_NAME}.in.in"
     edit "Makefile.in" "Makefile"
