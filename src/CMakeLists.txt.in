@@ -1,0 +1,33 @@
+# src/CMakeLists.txt
+
+add_definitions(-Werror)
+
+# General includes
+include_directories(
+    ${@BUILD_PROJECT_NAME_UPPER_CASE@_SRC_DIR}
+
+    # Headers for used libraries
+    # TODO: any additional headers?
+    ${GETTEXT_INCLUDE_DIR}
+    # ${Boost_INCLUDE_DIRS}
+    # ${SDL2_INCLUDE_DIR}
+)
+
+# main executable
+file(GLOB @BUILD_PROJECT_NAME_UPPER_CASE@_SOURCES
+    detail/*.cpp
+    *.cpp)
+set(@BUILD_PROJECT_NAME_UPPER_CASE@_BIN ${PROJECT_NAME})
+
+add_executable(${@BUILD_PROJECT_NAME_UPPER_CASE@_BIN} ${@BUILD_PROJECT_NAME_UPPER_CASE@_SOURCES})
+target_link_libraries(
+    ${@BUILD_PROJECT_NAME_UPPER_CASE@_BIN}
+
+    # used libraries
+    # TODO: any additional libraries?
+    ${GETTEXT_LIBRARIES}
+    # ${Boost_LIBRARIES}
+    # ${SDL2_LIBRARIES}
+    # ${SDL2_IMAGE_LIBRARIES}
+)
+

@@ -1,0 +1,51 @@
+# tests/CMakeLists.txt
+
+# gmock warning suppressions
+add_definitions(-Wno-unused-local-typedefs)
+remove_definitions(-pedantic)
+
+set(GMOCK_DIR  ${@BUILD_PROJECT_NAME_UPPER_CASE@_LIBS_DIR}/gmock)
+set(GTEST_DIR  ${GMOCK_DIR}/gtest)
+
+include_directories(
+    ${GMOCK_DIR}/include
+    ${GTEST_DIR}/include
+
+    ${@BUILD_PROJECT_NAME_UPPER_CASE@_TESTS_DIR}
+    ${@BUILD_PROJECT_NAME_UPPER_CASE@_SRC_DIR}
+
+    # TODO: additional headers?
+    # ${Boost_INCLUDE_DIRS}
+)
+
+file(GLOB_RECURSE @BUILD_PROJECT_NAME_UPPER_CASE@_TESTS_SOURCESS
+    # Glob expressions
+    # TODO: additional glob sources to be tested? 
+
+    # Selective files compiling. Remember to not add main.cpp!
+    # TODO: additional sources to be tested?
+
+    # Test files
+    *.cpp)
+set(@BUILD_PROJECT_NAME_UPPER_CASE@_TESTS_BIN ${PROJECT_NAME}_ut)
+
+add_executable(${@BUILD_PROJECT_NAME_UPPER_CASE@_TESTS_BIN} ${@BUILD_PROJECT_NAME_UPPER_CASE@_TESTS_SOURCESS})
+target_link_libraries(
+    ${@BUILD_PROJECT_NAME_UPPER_CASE@_TESTS_BIN}
+
+    # First link test environment
+    gmock
+    gtest
+
+    # Additional libraries
+    # TODO: additional libraries?
+    # ${Boost_LIBRARIES}
+)
+
+add_custom_target(
+    ${@BUILD_PROJECT_NAME_UPPER_CASE@_TESTS_BIN}_run
+    COMMAND ${@BUILD_PROJECT_NAME_UPPER_CASE@_TESTS_BIN}
+    DEPENDS ${@BUILD_PROJECT_NAME_UPPER_CASE@_TESTS_BIN}
+    WORKING_DIRECTORY ${CMAKE_BUILD_DIR}
+    COMMENT "Executing test suite..."
+)

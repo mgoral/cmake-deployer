@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# It's good as long as the last path component is not a symlink.
+SCRIPT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+edit() {
+    # Function call:
+    # edit path/to/file.in path/to/file.out
+
+    echo "Processing: ${1} --> ${2}"
+
+    sed \
+        -e "s|@BUILD_PROJECT_NAME[@]|${BUILD_PROJECT_NAME}|g" \
+        -e "s|@BUILD_PROJECT_NAME_UPPER_CASE[@]|${BUILD_PROJECT_NAME_UPPER_CASE}|g" \
+        -e "s|@BUILD_PROJECT_NAME_CAPITAL[@]|${BUILD_PROJECT_NAME_CAPITAL}|g" \
+        -e "s|@BUILD_PROJECT_AUTHOR[@]|${BUILD_PROJECT_AUTHOR}|g" \
+        -e "s|@BUILD_PROJECT_YEAR[@]|${BUILD_PROJECT_YEAR}|g" \
+        "${1}" > "${2}"
+
+    FILES_TO_CLEAN="${1} ${FILES_TO_CLEAN}"
+}
+
+show_todo() {
+    # Show what manual work is left to do here.
+    echo ""
+    echo "This might require you to do a little more manual work."
+    echo "Inspect those files to learn more: "
+    grep -rnH --color "TODO:" .
+    echo ""
+}
+
+create_empty_dir() {
+    echo "Creating directory: ${1}"
+    mkdir -p "${1}"
+}
+
+cleanup() {
+    echo "Cleanup..."
+    echo "rm -rf ${FILES_TO_CLEAN}"
+    rm -rf ${FILES_TO_CLEAN}
+    FILES_TO_CLEAN=
+}
+
+main() {
+    pushd "${SCRIPT_PATH}" > /dev/null
+
+    echo "Project name (all lower cases): "
+    read BUILD_PROJECT_NAME
+
+    echo "Project author: "
+    read BUILD_PROJECT_AUTHOR
+
+    BUILD_PROJECT_NAME_UPPER_CASE=`echo ${BUILD_PROJECT_NAME^^}`
+    BUILD_PROJECT_NAME_CAPITAL=`echo ${BUILD_PROJECT_NAME^}`
+    BUILD_PROJECT_YEAR=`date +%Y`
+
+    echo "Preparing build system for ${BUILD_PROJECT_NAME_CAPITAL}..."
+
+    FILES_TO_CLEAN=".git"
+
+    mv -f starter.in.in "${BUILD_PROJECT_NAME}.in.in"
+    edit "Makefile.in" "Makefile"
+    edit "autogen.sh.in" "autogen.sh" && chmod +x "autogen.sh"
+    edit "${BUILD_PROJECT_NAME}.in.in" "${BUILD_PROJECT_NAME}.in" && chmod +x "${BUILD_PROJECT_NAME}.in"
+    edit "CMakeLists.txt.in" "CMakeLists.txt"
+    edit "src/CMakeLists.txt.in" "src/CMakeLists.txt"
+    edit "src/main.cpp.in" "src/main.cpp"
+    edit "src/detail/Translate.hpp.in" "src/detail/Translate.hpp"
+    edit "tests/CMakeLists.txt.in" "tests/CMakeLists.txt"
+    edit "thirdparty/CMakeLists.txt.in" "thirdparty/CMakeLists.txt"
+
+    create_empty_dir "resources"
+    create_empty_dir "tests/mocks"
+    create_empty_dir "tests/testcases"
+    
+    show_todo
+
+    echo "Done! Now please remove configure file:"
+    echo "rm -f ${SCRIPT_PATH}/configure"
+
+    popd > /dev/null
+}
+
+main
